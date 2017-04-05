@@ -35,20 +35,21 @@ namespace Tiled2UnityLite_Builder
 
         static private void WriteZip(string version)
         {
-            Console.WriteLine("Writing zip for Tiled2UnityLite distribution");
-            string file = String.Format("Tiled2UnityLite-{0}.zip", version);
-            string unityPackage = String.Format("Tiled2Unity.{0}.unitypackage", version);
+            // Toolless: disabled for now
+            //Console.WriteLine("Writing zip for Tiled2UnityLite distribution");
+            //string file = String.Format("Tiled2UnityLite-{0}.zip", version);
+            //string unityPackage = String.Format("Tiled2Unity.{0}.unitypackage", version);
 
-            if (File.Exists(file))
-            {
-                File.Delete(file);
-            }
+            //if (File.Exists(file))
+            //{
+            //    File.Delete(file);
+            //}
             
-            using (ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Create))
-            {
-                zip.CreateEntryFromFile(unityPackage, unityPackage);
-                zip.CreateEntryFromFile("Tiled2UnityLite.cs", "Tiled2UnityLite.cs");
-            }
+            //using (ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Create))
+            //{
+            //    zip.CreateEntryFromFile(unityPackage, unityPackage);
+            //    zip.CreateEntryFromFile("Tiled2UnityLite.cs", "Tiled2UnityLite.cs");
+            //}
         }
 
         static private void WriteCS(string version)
