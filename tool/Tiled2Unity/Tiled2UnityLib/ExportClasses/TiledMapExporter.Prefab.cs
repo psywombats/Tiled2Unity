@@ -527,7 +527,7 @@ namespace Tiled2Unity
 
             XElement polygonCollider =
                 new XElement("PolygonCollider2D",
-                    new XElement("Path", String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X, pt.Y)))));
+                    new XElement("Path", String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X, pt.Y)).ToArray())));
 
             return polygonCollider;
         }
@@ -540,7 +540,7 @@ namespace Tiled2Unity
 
             XElement edgeCollider =
                 new XElement("EdgeCollider2D",
-                    new XElement("Points", String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X, pt.Y)))));
+                    new XElement("Points", String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X, pt.Y)).ToArray())));
 
             return edgeCollider;
         }

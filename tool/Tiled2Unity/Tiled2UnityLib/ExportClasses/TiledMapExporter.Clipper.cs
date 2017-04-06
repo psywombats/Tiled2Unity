@@ -99,7 +99,7 @@ namespace Tiled2Unity
             // Each PointF array is a polygon with a single path
             foreach (var pointfArray in polygons)
             {
-                string data = String.Join(" ", pointfArray.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)));
+                string data = String.Join(" ", pointfArray.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)).ToArray());
                 XElement pathElement = new XElement("Path", data);
 
                 XElement polyColliderElement = new XElement("PolygonCollider2D", pathElement);
@@ -118,7 +118,7 @@ namespace Tiled2Unity
             List<XElement> pathElements = new List<XElement>();
             foreach (var path in polygons)
             {
-                string data = String.Join(" ", path.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)));
+                string data = String.Join(" ", path.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)).ToArray());
                 XElement pathElement = new XElement("Path", data);
                 pathElements.Add(pathElement);
             }
@@ -137,7 +137,7 @@ namespace Tiled2Unity
             var combined = CombineLineSegments(lines);
             foreach (var points in combined)
             {
-                string data = String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)));
+                string data = String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)).ToArray());
                 XElement edgeCollider =
                     new XElement("EdgeCollider2D",
                         new XElement("Points", data));

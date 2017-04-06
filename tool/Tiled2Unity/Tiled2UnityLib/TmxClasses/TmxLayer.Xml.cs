@@ -169,7 +169,7 @@ namespace Tiled2Unity
             using (MemoryStream streamDecompressed = new MemoryStream())
             using (GZipStream deflateStream = new GZipStream(streamCompressed, CompressionMode.Decompress))
             {
-                deflateStream.CopyTo(streamDecompressed);
+                CopyTo(deflateStream, streamDecompressed);
                 byte[] bytesDecompressed = streamDecompressed.ToArray();
                 BytesToTiles(bytesDecompressed);
             }
@@ -190,7 +190,7 @@ namespace Tiled2Unity
             using (MemoryStream streamDecompressed = new MemoryStream())
             using (DeflateStream deflateStream = new DeflateStream(streamCompressed, CompressionMode.Decompress))
             {
-                deflateStream.CopyTo(streamDecompressed);
+                CopyTo(deflateStream, streamDecompressed);
                 byte[] bytesDecompressed = streamDecompressed.ToArray();
                 BytesToTiles(bytesDecompressed);
             }
@@ -284,5 +284,14 @@ namespace Tiled2Unity
             }
         }
 
+        private static void CopyTo(Stream source, Stream destination)
+        {
+            int bufferSize = 81920;
+
+            byte[] buffer = new byte[bufferSize];
+            int read;
+            while ((read = source.Read(buffer, 0, buffer.Length)) != 0)
+                destination.Write(buffer, 0, read);
+        }
     }
 }

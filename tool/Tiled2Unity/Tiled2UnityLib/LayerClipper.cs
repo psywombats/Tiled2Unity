@@ -104,7 +104,7 @@ namespace Tiled2Unity
                             poly.IsFlippedVertically = TmxMath.IsTileFlippedVertically(rawTileId);
                             poly.TileCenter = new PointF(tile.TileSize.Width * 0.5f, tile.TileSize.Height * 0.5f);
 
-                            TupleInt2 key = new TupleInt2(x, y);
+                            TupleInt2 key = new TupleInt2(groupX, groupY);
                             if (!polygonGroups.ContainsKey(key))
                             {
                                 polygonGroups[key] = new List<PolygonGroup>();

@@ -28,7 +28,6 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -119,7 +118,6 @@ namespace Tiled2Unity
 // using System.Collections.Generic;
 // using System.Linq;
 // using System.Text;
-// using System.Threading.Tasks;
 
 namespace Tiled2Unity
 {
@@ -198,7 +196,6 @@ namespace Tiled2Unity
 // using System.Collections.Generic;
 // using System.Linq;
 // using System.Text;
-// using System.Threading.Tasks;
 
 namespace Tiled2Unity
 {
@@ -321,7 +318,7 @@ namespace Tiled2Unity
                             poly.IsFlippedVertically = TmxMath.IsTileFlippedVertically(rawTileId);
                             poly.TileCenter = new PointF(tile.TileSize.Width * 0.5f, tile.TileSize.Height * 0.5f);
 
-                            TupleInt2 key = new TupleInt2(x, y);
+                            TupleInt2 key = new TupleInt2(groupX, groupY);
                             if (!polygonGroups.ContainsKey(key))
                             {
                                 polygonGroups[key] = new List<PolygonGroup>();
@@ -487,7 +484,11 @@ namespace Tiled2Unity
             line += "\n";
             if (OnWriteLine != null)
                 OnWriteLine(line);
+#if !TILED_2_UNITY_LITE
             Console.Write(line);
+#else
+            //UnityEngine.Debug.Log(line);
+#endif
         }
 
         public static void WriteLine(string fmt, params object[] args)
@@ -500,7 +501,11 @@ namespace Tiled2Unity
             success += "\n";
             if (OnWriteSuccess != null)
                 OnWriteSuccess(success);
+#if !TILED_2_UNITY_LITE
             Console.Write(success);
+#else
+            UnityEngine.Debug.Log(success);
+#endif
         }
 
         public static void WriteSuccess(string fmt, params object[] args)
@@ -513,7 +518,11 @@ namespace Tiled2Unity
             warning += "\n";
             if (OnWriteWarning != null)
                 OnWriteWarning(warning);
+#if !TILED_2_UNITY_LITE
             Console.Write(warning);
+#else
+            UnityEngine.Debug.LogWarning(warning);
+#endif
         }
 
         public static void WriteWarning(string fmt, params object[] args)
@@ -526,7 +535,11 @@ namespace Tiled2Unity
             error += "\n";
             if (OnWriteError != null)
                 OnWriteError(error);
+#if !TILED_2_UNITY_LITE
             Console.Write(error);
+#else
+            UnityEngine.Debug.LogError(error);
+#endif
         }
 
         public static void WriteError(string fmt, params object[] args)
@@ -1363,7 +1376,7 @@ namespace Tiled2Unity
             // Each PointF array is a polygon with a single path
             foreach (var pointfArray in polygons)
             {
-                string data = String.Join(" ", pointfArray.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)));
+                string data = String.Join(" ", pointfArray.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)).ToArray());
                 XElement pathElement = new XElement("Path", data);
 
                 XElement polyColliderElement = new XElement("PolygonCollider2D", pathElement);
@@ -1382,7 +1395,7 @@ namespace Tiled2Unity
             List<XElement> pathElements = new List<XElement>();
             foreach (var path in polygons)
             {
-                string data = String.Join(" ", path.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)));
+                string data = String.Join(" ", path.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)).ToArray());
                 XElement pathElement = new XElement("Path", data);
                 pathElements.Add(pathElement);
             }
@@ -1401,7 +1414,7 @@ namespace Tiled2Unity
             var combined = CombineLineSegments(lines);
             foreach (var points in combined)
             {
-                string data = String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)));
+                string data = String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X * Tiled2Unity.Settings.Scale, pt.Y * Tiled2Unity.Settings.Scale)).ToArray());
                 XElement edgeCollider =
                     new XElement("EdgeCollider2D",
                         new XElement("Points", data));
@@ -1635,13 +1648,23 @@ namespace Tiled2Unity
             using (MemoryStream byteStream = new MemoryStream())
             using (GZipStream gzipStream = new GZipStream(byteStream, CompressionMode.Compress))
             {
-                originalStream.CopyTo(gzipStream);
+                CopyTo(originalStream, gzipStream);
                 byte[] compressedBytes = byteStream.ToArray();
                 return Convert.ToBase64String(compressedBytes);
             }
 
             // Without compression (testing shows it ~300% larger)
             //return Convert.ToBase64String(File.ReadAllBytes(path));
+        }
+
+        private static void CopyTo(Stream source, Stream destination)
+        {
+            int bufferSize = 81920;
+
+            byte[] buffer = new byte[bufferSize];
+            int read;
+            while ((read = source.Read(buffer, 0, buffer.Length)) != 0)
+                destination.Write(buffer, 0, read);
         }
 
     } // end class
@@ -2661,7 +2684,7 @@ namespace Tiled2Unity
 
             XElement polygonCollider =
                 new XElement("PolygonCollider2D",
-                    new XElement("Path", String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X, pt.Y)))));
+                    new XElement("Path", String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X, pt.Y)).ToArray())));
 
             return polygonCollider;
         }
@@ -2674,7 +2697,7 @@ namespace Tiled2Unity
 
             XElement edgeCollider =
                 new XElement("EdgeCollider2D",
-                    new XElement("Points", String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X, pt.Y)))));
+                    new XElement("Points", String.Join(" ", points.Select(pt => String.Format("{0},{1}", pt.X, pt.Y)).ToArray())));
 
             return edgeCollider;
         }
@@ -2900,7 +2923,6 @@ namespace Tiled2Unity.Geometry
 // using System.Drawing;
 // using System.Linq;
 // using System.Text;
-// using System.Threading.Tasks;
 
 namespace Tiled2Unity.Geometry
 {
@@ -3030,7 +3052,6 @@ namespace Tiled2Unity.Geometry
 // using System.Drawing;
 // using System.Linq;
 // using System.Text;
-// using System.Threading.Tasks;
 
 namespace Tiled2Unity.Geometry
 {
@@ -12250,7 +12271,6 @@ namespace LibTessDotNet
 // using System.Collections.Generic;
 // using System.Linq;
 // using System.Text;
-// using System.Threading.Tasks;
 
 namespace Tiled2Unity
 {
@@ -12328,7 +12348,6 @@ namespace Tiled2Unity
 // using System.Collections.Generic;
 // using System.Linq;
 // using System.Text;
-// using System.Threading.Tasks;
 
 namespace Tiled2Unity
 {
@@ -12471,7 +12490,6 @@ namespace Tiled2Unity
 // using System.Drawing;
 // using System.Linq;
 // using System.Text;
-// using System.Threading.Tasks;
 // using System.Xml.Linq;
 
 namespace Tiled2Unity
@@ -13142,7 +13160,7 @@ namespace Tiled2Unity
             using (MemoryStream streamDecompressed = new MemoryStream())
             using (GZipStream deflateStream = new GZipStream(streamCompressed, CompressionMode.Decompress))
             {
-                deflateStream.CopyTo(streamDecompressed);
+                CopyTo(deflateStream, streamDecompressed);
                 byte[] bytesDecompressed = streamDecompressed.ToArray();
                 BytesToTiles(bytesDecompressed);
             }
@@ -13163,7 +13181,7 @@ namespace Tiled2Unity
             using (MemoryStream streamDecompressed = new MemoryStream())
             using (DeflateStream deflateStream = new DeflateStream(streamCompressed, CompressionMode.Decompress))
             {
-                deflateStream.CopyTo(streamDecompressed);
+                CopyTo(deflateStream, streamDecompressed);
                 byte[] bytesDecompressed = streamDecompressed.ToArray();
                 BytesToTiles(bytesDecompressed);
             }
@@ -13257,6 +13275,15 @@ namespace Tiled2Unity
             }
         }
 
+        private static void CopyTo(Stream source, Stream destination)
+        {
+            int bufferSize = 81920;
+
+            byte[] buffer = new byte[bufferSize];
+            int read;
+            while ((read = source.Read(buffer, 0, buffer.Length)) != 0)
+                destination.Write(buffer, 0, read);
+        }
     }
 }
 
@@ -13369,7 +13396,6 @@ namespace Tiled2Unity
 // using System.Collections.Generic;
 // using System.Linq;
 // using System.Text;
-// using System.Threading.Tasks;
 // using System.Xml.Linq;
 
 namespace Tiled2Unity

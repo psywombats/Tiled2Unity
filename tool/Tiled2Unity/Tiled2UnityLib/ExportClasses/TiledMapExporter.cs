@@ -203,13 +203,23 @@ namespace Tiled2Unity
             using (MemoryStream byteStream = new MemoryStream())
             using (GZipStream gzipStream = new GZipStream(byteStream, CompressionMode.Compress))
             {
-                originalStream.CopyTo(gzipStream);
+                CopyTo(originalStream, gzipStream);
                 byte[] compressedBytes = byteStream.ToArray();
                 return Convert.ToBase64String(compressedBytes);
             }
 
             // Without compression (testing shows it ~300% larger)
             //return Convert.ToBase64String(File.ReadAllBytes(path));
+        }
+
+        private static void CopyTo(Stream source, Stream destination)
+        {
+            int bufferSize = 81920;
+
+            byte[] buffer = new byte[bufferSize];
+            int read;
+            while ((read = source.Read(buffer, 0, buffer.Length)) != 0)
+                destination.Write(buffer, 0, read);
         }
 
     } // end class

@@ -29,7 +29,11 @@ namespace Tiled2Unity
             line += "\n";
             if (OnWriteLine != null)
                 OnWriteLine(line);
+#if !TILED_2_UNITY_LITE
             Console.Write(line);
+#else
+            //UnityEngine.Debug.Log(line);
+#endif
         }
 
         public static void WriteLine(string fmt, params object[] args)
@@ -42,7 +46,11 @@ namespace Tiled2Unity
             success += "\n";
             if (OnWriteSuccess != null)
                 OnWriteSuccess(success);
+#if !TILED_2_UNITY_LITE
             Console.Write(success);
+#else
+            UnityEngine.Debug.Log(success);
+#endif
         }
 
         public static void WriteSuccess(string fmt, params object[] args)
@@ -55,7 +63,11 @@ namespace Tiled2Unity
             warning += "\n";
             if (OnWriteWarning != null)
                 OnWriteWarning(warning);
+#if !TILED_2_UNITY_LITE
             Console.Write(warning);
+#else
+            UnityEngine.Debug.LogWarning(warning);
+#endif
         }
 
         public static void WriteWarning(string fmt, params object[] args)
@@ -68,7 +80,11 @@ namespace Tiled2Unity
             error += "\n";
             if (OnWriteError != null)
                 OnWriteError(error);
+#if !TILED_2_UNITY_LITE
             Console.Write(error);
+#else
+            UnityEngine.Debug.LogError(error);
+#endif
         }
 
         public static void WriteError(string fmt, params object[] args)

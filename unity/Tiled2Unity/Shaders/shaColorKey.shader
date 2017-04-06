@@ -1,5 +1,4 @@
-﻿// Legacy shader for older Tiled2Unity builds. Will eventually remove.
-Shader "Tiled2Unity/TextureTintSnap (Legacy)"
+﻿Shader "Tiled2Unity/Default Color Key"
 {
     Properties
     {
@@ -17,7 +16,6 @@ Shader "Tiled2Unity/TextureTintSnap (Legacy)"
             "IgnoreProjector"="True" 
             "RenderType"="Transparent" 
             "PreviewType"="Plane"
-            "CanUseSpriteAtlas"="True"
         }
 
         Cull Off
@@ -77,7 +75,7 @@ Shader "Tiled2Unity/TextureTintSnap (Legacy)"
                     _AlphaColorKey.g == texcol.g &&
                     _AlphaColorKey.b == texcol.b)
                 {
-                    texcol.a = 0;
+                    discard;
                 }
                 else
                 {

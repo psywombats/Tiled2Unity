@@ -50,6 +50,12 @@ namespace Tiled2Unity
                 return true;
             }
 
+            // *.tmx files are always supported by this processor
+            if (assetPath.EndsWith(".tmx", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
+
             // All other files can only use this post processor if their import was requested by an ImportBehaviour
             return ImportBehaviour.IsAssetBeingImportedByTiled2Unity(assetPath);
 #endif

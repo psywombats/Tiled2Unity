@@ -2,10 +2,10 @@
 pushd %~dp0
 rem This is hardcoded to expect the Tiled2Unity test project at location ..\..\..\
 
-rem set ObjectTypeXml=""
-set ObjectTypeXml="..\..\..\unity\Tiled2Unity\tiled\objecttypes.xml"
-set TiledTmx="..\..\..\unity\Tiled2Unity\tiled\collision-layers\Cutman-CollisionLayers.tmx"
-set Tiled2UnityDir="..\..\..\unity\Tiled2Unity\unity\Assets\Tiled2Unity"
+set ObjectTypeXml=""
+rem set ObjectTypeXml="..\..\..\Tiled2UnityTest\Assets\Maps\objecttypes.xml"
+set TiledTmx="..\..\..\Tiled2UnityTest\Assets\Maps\Test.tmx"
+set Tiled2UnityDir="..\..\..\Tiled2UnityTest\Assets\Tiled2Unity"
 
 cscs Tiled2UnityLite.cs --help
 
