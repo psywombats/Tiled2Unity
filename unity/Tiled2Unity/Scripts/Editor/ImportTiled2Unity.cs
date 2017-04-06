@@ -73,6 +73,12 @@ namespace Tiled2Unity
             return startsWith && endsWith;
         }
 
+        public bool IsTiled2UnityTmx()
+        {
+            bool endsWith = this.fullPathToFile.EndsWith(".tmx");
+            return endsWith;
+        }
+
         public string GetMeshAssetPath(string file)
         {
             string name = System.IO.Path.GetFileNameWithoutExtension(file);

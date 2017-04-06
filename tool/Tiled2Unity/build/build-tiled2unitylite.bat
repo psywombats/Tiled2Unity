@@ -46,6 +46,8 @@ echo -- Building Tiled2UnityLite.cs
 if ERRORLEVEL 1 goto LiteFailed
 echo -- Successfully built Tiled2UnityLite
 
+mv Tiled2UnityLite.cs ../../../unity/Tiled2Unity/Scripts/Editor
+
 goto :Done
 
 endlocal

@@ -101,6 +101,11 @@ namespace Tiled2Unity
                         // A prefab was imported. Once all prefabs are imported then the import is complete.
                         t2uImporter.PrefabImported(imported);
                     }
+                    else if (t2uImporter.IsTiled2UnityTmx())
+                    {
+                        // A TMX - let's kick off an autobuild
+                        t2uImporter.TmxImported(imported);
+                    }
                 }
 #endif
             }

@@ -9,8 +9,46 @@ using System.Text;
 // Given a TmxMap and TmxLayer, crank out a Clipper polytree solution
 namespace Tiled2Unity
 {
+    using System.Collections;
     using ClipperPolygon = List<ClipperLib.IntPoint>;
     using ClipperPolygons = List<List<ClipperLib.IntPoint>>;
+
+    public class TupleInt2
+    {
+        public int Item1, Item2;
+        public TupleInt2(int x, int y)
+        {
+            Item1 = x;
+            Item2 = y;
+        }
+
+        public override bool Equals(object other)
+        {
+            if (!typeof(TupleInt2).IsAssignableFrom(other.GetType()))
+            {
+                return false;
+            } else {
+                TupleInt2 otherVector = (TupleInt2)other;
+                return otherVector.Item1 == Item1 && otherVector.Item2 == Item2;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return Item1.GetHashCode() * 769 + Item2.GetHashCode() * 1543;
+        }
+    }
+
+    public class PolygonGroup
+    {
+        public Point PositionOnMap;
+        public TmxHasPoints HasPointsInterface;
+        public TmxObject TmxObjectInterface;
+        public bool IsFlippedDiagnoally;
+        public bool IsFlippedHorizontally;
+        public bool IsFlippedVertically;
+        public PointF TileCenter;
+    }
 
     public class LayerClipper
     {
@@ -36,33 +74,74 @@ namespace Tiled2Unity
             // From the perspective of Clipper lines are polygons too
             // Closed paths == polygons
             // Open paths == lines
-            var polygonGroups = from y in Enumerable.Range(0, tmxLayer.Height)
-                                from x in Enumerable.Range(0, tmxLayer.Width)
-                                let rawTileId = tmxLayer.GetRawTileIdAt(x, y)
-                                where rawTileId != 0
-                                let tileId = TmxMath.GetTileIdWithoutFlags(rawTileId)
-                                let tile = tmxMap.Tiles[tileId]
-                                from polygon in tile.ObjectGroup.Objects
-                                where (polygon as TmxHasPoints) != null
-                                where  usingUnityLayerOverride || String.Compare(polygon.Type, tmxLayer.Name, true) == 0
-                                let groupX = x / LayerClipper.GroupBySize
-                                let groupY = y / LayerClipper.GroupBySize
-                                group new
-                                {
-                                    PositionOnMap = tmxMap.GetMapPositionAt(x, y, tile),
-                                    HasPointsInterface = polygon as TmxHasPoints,
-                                    TmxObjectInterface = polygon,
-                                    IsFlippedDiagnoally = TmxMath.IsTileFlippedDiagonally(rawTileId),
-                                    IsFlippedHorizontally = TmxMath.IsTileFlippedHorizontally(rawTileId),
-                                    IsFlippedVertically = TmxMath.IsTileFlippedVertically(rawTileId),
-                                    TileCenter = new PointF(tile.TileSize.Width * 0.5f, tile.TileSize.Height * 0.5f),
-                                }
-                                by Tuple.Create(groupX, groupY);
+            Dictionary<TupleInt2, List<PolygonGroup>> polygonGroups = new Dictionary<TupleInt2, List<PolygonGroup>>();
+            foreach (int y in Enumerable.Range(0, tmxLayer.Height))
+            {
+                foreach (int x in Enumerable.Range(0, tmxLayer.Width))
+                {
+                    uint rawTileId = tmxLayer.GetRawTileIdAt(x, y);
+                    if (rawTileId == 0)
+                    {
+                        continue;
+                    }
+
+                    uint tileId = TmxMath.GetTileIdWithoutFlags(rawTileId);
+                    TmxTile tile = tmxMap.Tiles[tileId];
+
+                    foreach (TmxObject polygon in tile.ObjectGroup.Objects)
+                    {
+                        if (typeof(TmxHasPoints).IsAssignableFrom(polygon.GetType()) &&
+                            (usingUnityLayerOverride || String.Compare(polygon.Type, tmxLayer.Name, true) == 0)) {
+                            int groupX = x / LayerClipper.GroupBySize;
+                            int groupY = y / LayerClipper.GroupBySize;
+
+                            PolygonGroup poly = new PolygonGroup();
+                            poly.PositionOnMap = tmxMap.GetMapPositionAt(x, y, tile);
+                            poly.HasPointsInterface = polygon as TmxHasPoints;
+                            poly.TmxObjectInterface = polygon;
+                            poly.IsFlippedDiagnoally = TmxMath.IsTileFlippedDiagonally(rawTileId);
+                            poly.IsFlippedHorizontally = TmxMath.IsTileFlippedHorizontally(rawTileId);
+                            poly.IsFlippedVertically = TmxMath.IsTileFlippedVertically(rawTileId);
+                            poly.TileCenter = new PointF(tile.TileSize.Width * 0.5f, tile.TileSize.Height * 0.5f);
+
+                            TupleInt2 key = new TupleInt2(x, y);
+                            if (!polygonGroups.ContainsKey(key))
+                            {
+                                polygonGroups[key] = new List<PolygonGroup>();
+                            }
+                            polygonGroups[key].Add(poly);
+                        }
+                    }
+                }
+            }
+            // Tuple not supported in Mono 2.0 so doing this the old fashioned way, sorry
+            //var polygonGroups = from y in Enumerable.Range(0, tmxLayer.Height)
+            //                    from x in Enumerable.Range(0, tmxLayer.Width)
+            //                    let rawTileId = tmxLayer.GetRawTileIdAt(x, y)
+            //                    where rawTileId != 0
+            //                    let tileId = TmxMath.GetTileIdWithoutFlags(rawTileId)
+            //                    let tile = tmxMap.Tiles[tileId]
+            //                    from polygon in tile.ObjectGroup.Objects
+            //                    where (polygon as TmxHasPoints) != null
+            //                    where  usingUnityLayerOverride || String.Compare(polygon.Type, tmxLayer.Name, true) == 0
+            //                    let groupX = x / LayerClipper.GroupBySize
+            //                    let groupY = y / LayerClipper.GroupBySize
+            //                    group new
+            //                    {
+            //                        PositionOnMap = tmxMap.GetMapPositionAt(x, y, tile),
+            //                        HasPointsInterface = polygon as TmxHasPoints,
+            //                        TmxObjectInterface = polygon,
+            //                        IsFlippedDiagnoally = TmxMath.IsTileFlippedDiagonally(rawTileId),
+            //                        IsFlippedHorizontally = TmxMath.IsTileFlippedHorizontally(rawTileId),
+            //                        IsFlippedVertically = TmxMath.IsTileFlippedVertically(rawTileId),
+            //                        TileCenter = new PointF(tile.TileSize.Width * 0.5f, tile.TileSize.Height * 0.5f),
+            //                    }
+            //                    by Tuple.Create(groupX, groupY);
 
             int groupIndex = 0;
             int groupCount = polygonGroups.Count();
 
-            foreach (var polyGroup in polygonGroups)
+            foreach (TupleInt2 key in polygonGroups.Keys)
             {
                 if (groupIndex % 5 == 0)
                 {
@@ -74,7 +153,7 @@ namespace Tiled2Unity
                 ClipperLib.Clipper groupClipper = new ClipperLib.Clipper();
 
                 // Add all our polygons to the Clipper library so it can reduce all the polygons to a (hopefully small) number of paths
-                foreach (var poly in polyGroup)
+                foreach (PolygonGroup poly in polygonGroups[key])
                 {
                     // Create a clipper library polygon out of each and add it to our collection
                     ClipperPolygon clipperPolygon = new ClipperPolygon();

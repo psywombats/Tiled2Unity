@@ -455,7 +455,7 @@ namespace Tiled2Unity
             var xml = goXml.Element("TmxObjectComponent");
             if (xml != null)
             {
-                TmxObject tmxObject = gameObject.AddComponent<TmxObject>();
+                RuntimeTmxObject tmxObject = gameObject.AddComponent<RuntimeTmxObject>();
                 FillBaseTmxObjectProperties(tmxObject, xml);
             }
         }
@@ -514,7 +514,7 @@ namespace Tiled2Unity
             }
         }
 
-        private void FillBaseTmxObjectProperties(Tiled2Unity.TmxObject tmxComponent, XElement xml)
+        private void FillBaseTmxObjectProperties(Tiled2Unity.RuntimeTmxObject tmxComponent, XElement xml)
         {
             tmxComponent.TmxId = ImportUtils.GetAttributeAsInt(xml, "tmx-object-id", -1);
             tmxComponent.TmxName = ImportUtils.GetAttributeAsString(xml, "tmx-object-name", "");
