@@ -52,6 +52,9 @@ namespace Tiled2Unity
             AssignUnityProperties(this.tmxMap, prefab, PrefabContext.Root);
             AssignTiledProperties(this.tmxMap, prefab);
 
+            // Add the tileset lookup info
+            AddTilesetInfo(this.tmxMap.TilesetFirstGids, prefab);
+
             // Add all layers (tiles, objects, groups) to the prefab
             foreach (var node in this.tmxMap.LayerNodes)
             {
@@ -136,6 +139,10 @@ namespace Tiled2Unity
 
                 xmlLayer.Add(layerComponent);
             }
+
+            // Add a Terrain component
+            XElement terrainComponent = new XElement("Terrain", CreateTerrainDataForLayer(tileLayer));
+            xmlLayer.Add(terrainComponent);
 
             if (tileLayer.Ignore != TmxLayer.IgnoreSettings.Visual)
             {
@@ -677,7 +684,32 @@ namespace Tiled2Unity
             xmlTileObjectRoot.Add(xmlTileObject);
         }
 
+        private string CreateTerrainDataForLayer(TmxLayer layer)
+        {
+            StringBuilder result = new StringBuilder();
+            for (int x = 0; x < layer.Width; x += 1)
+            {
+                for (int y = 0; y < layer.Height; y += 1)
+                {
+                    uint terrainId = layer.GetTileIdAt(x, y);
+                    result.Append(terrainId);
+                    result.Append(',');
+                }
+            }
+            return result.ToString();
+        }
 
+        private void AddTilesetInfo(Dictionary<uint, string> tilesetFirstGids, XElement prefab)
+        {
+            foreach (KeyValuePair<uint, string> firstGid in tilesetFirstGids)
+            {
+                XElement element = new XElement("TilesetFirstGid");
+                element.SetAttributeValue("firstGid", firstGid.Key);
+                element.SetAttributeValue("tilesetName", firstGid.Value);
+
+                prefab.Add(element);
+            }
+        }
 
     } // end class
 } // end namespace

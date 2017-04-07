@@ -143,6 +143,8 @@ namespace Tiled2Unity
 
             Logger.WriteLine("Parse internal tileset '{0}' (gid = {1}) ...", tilesetName, firstId);
 
+            TilesetFirstGids[firstId] = tilesetName;
+
             int tileWidth = TmxHelper.GetAttributeAsInt(elemTileset, "tilewidth");
             int tileHeight = TmxHelper.GetAttributeAsInt(elemTileset, "tileheight");
             int spacing = TmxHelper.GetAttributeAsInt(elemTileset, "spacing", 0);

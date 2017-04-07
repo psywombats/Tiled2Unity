@@ -59,6 +59,10 @@ namespace Tiled2Unity
         // The map may load object type data from another file
         public TmxObjectTypes ObjectTypes = new TmxObjectTypes();
 
+        // Exported to Unity later so that the game can parse raw tiled ids to tilesets
+        // format is firstGid -> tilesetName
+        public Dictionary<uint, string> TilesetFirstGids { get; private set; }
+
         private uint nextUniqueId = 0;
 
         public TmxMap()
@@ -66,6 +70,7 @@ namespace Tiled2Unity
             this.IsLoaded = false;
             this.Properties = new TmxProperties();
             this.LayerNodes = new List<TmxLayerNode>();
+            this.TilesetFirstGids = new Dictionary<uint, string>();
         }
 
         public string GetExportedFilename()
