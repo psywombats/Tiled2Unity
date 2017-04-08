@@ -56,6 +56,52 @@ namespace Tiled2Unity
         // All tilesets referenced by this map
         public LinkedTilesets Tilesets;
 
+        public Tiled2Unity.Layer GetTileLayerNamed(string layerName)
+        {
+            foreach (Transform childTransform in transform)
+            {
+                GameObject gameObject = childTransform.gameObject;
+                Tiled2Unity.Layer layer = gameObject.GetComponent<TileLayer>();
+                if (layer != null)
+                {
+                    return layer;
+                }
+            }
+            return null;
+        }
+
+        public TiledProperty GetPropertyForTile(string propertyName, TileLayer layer, uint x, uint y)
+        {
+            int tileId = layer.TerrainIds[y * NumTilesWide + x];
+            List<TiledProperty> properties = GetPropertiesForTileId(tileId);
+            foreach (TiledProperty property in properties)
+            {
+                if (property.Key == propertyName)
+                {
+                    return property;
+                }
+            }
+            return null;
+        }
+
+        public List<TiledProperty> GetPropertiesForTileId(int tileId)
+        {
+            // really that should be a dictionary return type
+            foreach (KeyValuePair<int, Tileset> tilesetPair in Tilesets)
+            {
+                int relativeGid = tileId - tilesetPair.Key;
+                if (relativeGid < 0)
+                {
+                    continue;
+                }
+                if (tilesetPair.Value.Properties.ContainsKey(relativeGid))
+                {
+                    return tilesetPair.Value.Properties[relativeGid];
+                }
+            }
+            return new List<TiledProperty>();
+        }
+
         public float GetMapWidthInPixelsScaled()
         {
             return this.MapWidthInPixels * this.transform.lossyScale.x * this.ExportScale;

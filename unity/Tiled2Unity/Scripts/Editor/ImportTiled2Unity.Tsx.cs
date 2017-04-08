@@ -10,14 +10,12 @@ namespace Tiled2Unity
     {
         public void TsxImported(string tsxPath)
         {
+            // hardcoded asset path? blah
             string tilesetName = tsxPath.Substring(tsxPath.LastIndexOf('/') + 1, tsxPath.Length - tsxPath.LastIndexOf(".tsx") + 1);
-            string tilesetDirectory = tsxPath.Substring(0, tsxPath.LastIndexOf('/'));
-            string prefabPath = tilesetDirectory + "/" + tilesetName + ".prefab";
+            string assetPath = "Assets/Tiled2Unity/Tilesets/" + tilesetName + ".asset";
 
-            GameObject tilesetObject = new GameObject(tilesetName);
-            tilesetObject.AddComponent<Tileset>();
-
-            Tileset tileset = tilesetObject.GetComponent<Tileset>();
+            Tileset tileset = ScriptableObject.CreateInstance<Tileset>();
+            tileset.TilesetName = tilesetName;
             tileset.Properties = new TilesetProperties();
             XDocument document = XDocument.Load(tsxPath);
             XElement tilesetXml = document.Element("tileset");
@@ -40,9 +38,8 @@ namespace Tiled2Unity
                 }
             }
 
-            AssetDatabase.DeleteAsset(prefabPath);
-            PrefabUtility.CreatePrefab(prefabPath, tilesetObject);
-            GameObject.DestroyImmediate(tilesetObject);
+            AssetDatabase.DeleteAsset(assetPath);
+            AssetDatabase.CreateAsset(tileset, assetPath);
         }
     }
 }

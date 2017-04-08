@@ -50,9 +50,12 @@ namespace Tiled2Unity
         private void CreatePrefab(XElement xmlPrefab, string objPath, Tiled2Unity.ImportBehaviour importComponent)
         {
             var customImporters = GetCustomImporterInstances(importComponent);
-
+            
             // Part 1: Create the prefab
             string prefabName = xmlPrefab.Attribute("name").Value;
+            string resourcePath = ImportUtils.GetAttributeAsString(xmlPrefab, "resourcePath", "");
+            bool isResource = !String.IsNullOrEmpty(resourcePath) || ImportUtils.GetAttributeAsBoolean(xmlPrefab, "resource", false);
+            string prefabPath = GetPrefabAssetPath(prefabName, isResource, resourcePath);
             float prefabScale = ImportUtils.GetAttributeAsFloat(xmlPrefab, "scale", 1.0f);
             GameObject tempPrefab = new GameObject(prefabName);
             HandleTiledAttributes(tempPrefab, xmlPrefab, importComponent);
@@ -71,9 +74,6 @@ namespace Tiled2Unity
             tempPrefab.transform.localScale = new Vector3(prefabScale, prefabScale, prefabScale);
 
             // Part 4: Save the prefab, keeping references intact.
-            string resourcePath = ImportUtils.GetAttributeAsString(xmlPrefab, "resourcePath", "");
-            bool isResource = !String.IsNullOrEmpty(resourcePath) || ImportUtils.GetAttributeAsBoolean(xmlPrefab, "resource", false);
-            string prefabPath = GetPrefabAssetPath(prefabName, isResource, resourcePath);
             string prefabFile = System.IO.Path.GetFileName(prefabPath);
 
             // Keep track of the prefab file being imported
@@ -416,11 +416,25 @@ namespace Tiled2Unity
 
         private void AddTileLayerComponentsTo(GameObject gameObject, XElement goXml)
         {
+            Tiled2Unity.TileLayer tileLayer = gameObject.AddComponent<Tiled2Unity.TileLayer>();
+
             var xml = goXml.Element("TileLayer");
             if (xml != null)
             {
-                Tiled2Unity.TileLayer tileLayer = gameObject.AddComponent<Tiled2Unity.TileLayer>();
                 SetLayerComponentProperties(tileLayer, xml);
+            }
+
+            var terrainXml = goXml.Element("Terrain");
+            if (terrainXml != null)
+            {
+                string terrainString = terrainXml.Value;
+                string[] terrainIdStrings = terrainString.Split(',');
+                int[] terrainIds = new int[terrainIdStrings.Length];
+                for (int i = 0; i < terrainIdStrings.Length; i += 1)
+                {
+                    terrainIds[i] = int.Parse(terrainIdStrings[i]);
+                }
+                tileLayer.terrain = terrainIds;
             }
         }
 
@@ -558,6 +572,7 @@ namespace Tiled2Unity
                 map.MapWidthInPixels = ImportUtils.GetAttributeAsInt(goXml, "mapWidthInPixels");
                 map.MapHeightInPixels = ImportUtils.GetAttributeAsInt(goXml, "mapHeightInPixels");
                 map.BackgroundColor = ImportUtils.GetAttributeAsColor(goXml, "backgroundColor", Color.black);
+                map.Tilesets = ConstructTilesets(goXml, importComponent);
             }
             catch
             {
@@ -615,6 +630,27 @@ namespace Tiled2Unity
 
             var instances = types.Select(t => (ICustomTiledImporter)Activator.CreateInstance(t));
             return instances.ToList();
+        }
+
+        private LinkedTilesets ConstructTilesets(XElement xml, Tiled2Unity.ImportBehaviour importComponent)
+        {
+            LinkedTilesets tilesets = new LinkedTilesets();
+
+            foreach (XElement tilesetXml in xml.Descendants("TilesetFirstGid"))
+            {
+                int firstGid = int.Parse(tilesetXml.Attribute("firstGid").Value);
+
+                // unfortunately we lose directory info here
+                string tilesetName = tilesetXml.Attribute("tilesetName").Value;
+                string xmlDir = importComponent.Tiled2UnityXmlPath.Substring(0, importComponent.Tiled2UnityXmlPath.LastIndexOf('/'));
+                string tilesetsDir = xmlDir.Substring(0, xmlDir.LastIndexOf('/'));
+                string tilesetPath = tilesetsDir + "/Tilesets/" + tilesetName + ".asset";
+                Tileset tileset = AssetDatabase.LoadAssetAtPath<Tileset>(tilesetPath);
+
+                tilesets[firstGid] = tileset;
+            }
+
+            return tilesets;
         }
     }
 }
