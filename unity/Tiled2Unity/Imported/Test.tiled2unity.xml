@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 4/6/2017 2:54:52 AM-->
+<!--Last exported: 4/7/2017 3:55:13 AM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="lower2" />
   <AssignMaterial mesh="mesh_0002" material="lower2" />
@@ -20,6 +20,7 @@
     <Property name="name" value="saga testmap" />
     <GameObject name="Tile Layer 1" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />
+      <Terrain>28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,12,19,86,28,12,19,1,1,1,1,1,1,1,28,28,12,19,86,28,12,19,10,1,1,1,1,1,1,28,28,12,19,10,28,12,19,10,10,1,1,1,1,1,28,28,12,19,10,28,12,19,10,10,10,1,1,1,1,28,28,12,19,10,28,12,19,10,10,10,10,1,1,1,28,28,12,19,10,28,12,19,10,10,59,10,10,1,1,28,28,12,19,10,10,164,164,10,10,10,10,10,1,1,28,28,12,19,10,10,12,19,10,10,59,10,10,10,1,28,28,12,19,10,10,171,171,10,10,10,10,10,10,1,28,28,12,19,10,10,12,19,10,10,28,12,19,10,1,28,28,12,19,10,10,10,10,10,10,28,12,19,10,1,28,28,12,19,10,10,10,10,10,10,28,12,19,10,1,28,28,12,19,128,10,10,10,10,10,28,12,19,10,10,28,28,12,19,128,10,10,10,10,10,28,12,19,10,10,28,28,12,19,128,10,10,10,10,10,28,12,19,10,10,28,28,12,19,128,1,28,28,28,28,28,12,19,1,10,28,28,12,19,128,1,70,70,70,70,70,70,70,1,10,28,28,12,19,129,1,70,70,70,70,70,70,70,1,10,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,</Terrain>
       <GameObject name="lower2" copy="mesh_0001" sortingLayerName="" sortingOrder="0" opacity="1" />
       <GameObject name="lower2[0-500][2000]" copy="mesh_0002" sortingLayerName="" sortingOrder="0" opacity="1">
         <TileAnimator startTimeMs="0" durationMs="500" fullTimeMs="2000" />
@@ -58,19 +59,26 @@
     </GameObject>
     <GameObject name="Tile Layer 2" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />
+      <Terrain>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,228,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,227,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,</Terrain>
       <GameObject name="upper2" copy="mesh_0010" sortingLayerName="" sortingOrder="1" opacity="1" />
       <Property name="z" value=".5" />
     </GameObject>
     <GameObject name="Object Layer 1" x="-48" y="-80" z="0">
       <ObjectLayer offsetX="-48" offsetY="80" color="#ff808080" />
       <GameObject name="TestEvent" x="80" y="-112" rotation="0" layer="">
-        <Property name="dummyKey" value="dummyVal" />
+        <Property name="bool" value="true" />
+        <Property name="color" value="#ffff55ff" />
+        <Property name="file" value="dummyfile.txt" />
+        <Property name="float" value="0.2" />
+        <Property name="int" value="2" />
+        <Property name="string" value="Dummy value!" />
         <RectangleObjectComponent tmx-object-id="35" tmx-object-name="TestEvent" tmx-object-type="" tmx-object-x="80" tmx-object-y="112" tmx-object-width="16" tmx-object-height="16" tmx-object-rotation="0" />
         <BoxCollider2D width="16" height="16" />
       </GameObject>
     </GameObject>
     <GameObject name="Tile Layer 3" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />
+      <Terrain>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,219,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,</Terrain>
       <GameObject name="upper2" copy="mesh_0011" sortingLayerName="" sortingOrder="2" opacity="1" />
       <Property name="z" value="1.5" />
     </GameObject>

@@ -21,6 +21,7 @@ namespace Tiled2Unity
             Tiled2UnityLite.Run(args.ToArray());
 
             string mapName = tmxPath.Substring(tmxPath.LastIndexOf('/') + 1, tmxPath.Length - tmxPath.LastIndexOf(".tmx"));
+            AssetDatabase.Refresh();
             AssetDatabase.ImportAsset("Assets/Tiled2Unity/Imported/" + mapName + ".tiled2unity.xml");
         }
     }

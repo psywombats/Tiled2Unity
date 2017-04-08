@@ -50,8 +50,8 @@ namespace Tiled2Unity
                 return true;
             }
 
-            // *.tmx files are always supported by this processor
-            if (assetPath.EndsWith(".tmx", StringComparison.InvariantCultureIgnoreCase))
+            // *.tmx *.tsx files are always supported by this processor
+            if (assetPath.EndsWith(".tmx", StringComparison.InvariantCultureIgnoreCase) || assetPath.EndsWith(".tsx", StringComparison.InvariantCultureIgnoreCase))
             {
                 return true;
             }
@@ -111,6 +111,11 @@ namespace Tiled2Unity
                     {
                         // A TMX - let's kick off an autobuild
                         t2uImporter.TmxImported(imported);
+                    }
+                    else if (t2uImporter.IsTiled2UnityTsx())
+                    {
+                        // A tileset - let's make that available for terrain lookups
+                        t2uImporter.TsxImported(imported);
                     }
                 }
 #endif

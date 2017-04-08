@@ -7,6 +7,10 @@ using UnityEngine;
 
 namespace Tiled2Unity
 {
+    // first gid -> tileset
+    [Serializable]
+    public class LinkedTilesets : SerializableDictionary<int, Tileset> { }
+
     public class TiledMap : MonoBehaviour
     {
         public enum MapOrientation
@@ -48,6 +52,9 @@ namespace Tiled2Unity
 
         // Background color could be used to set the camera clear color to get the same effect as in Tiled
         public Color BackgroundColor = Color.black;
+
+        // All tilesets referenced by this map
+        public LinkedTilesets Tilesets;
 
         public float GetMapWidthInPixelsScaled()
         {
