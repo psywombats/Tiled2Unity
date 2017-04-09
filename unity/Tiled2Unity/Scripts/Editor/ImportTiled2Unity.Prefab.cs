@@ -429,12 +429,11 @@ namespace Tiled2Unity
             {
                 string terrainString = terrainXml.Value;
                 string[] terrainIdStrings = terrainString.Split(',');
-                int[] terrainIds = new int[terrainIdStrings.Length];
+                tileLayer.TerrainIds = new int[terrainIdStrings.Length];
                 for (int i = 0; i < terrainIdStrings.Length; i += 1)
                 {
-                    terrainIds[i] = int.Parse(terrainIdStrings[i]);
+                    tileLayer.TerrainIds[i] = int.Parse(terrainIdStrings[i]);
                 }
-                tileLayer.terrain = terrainIds;
             }
         }
 
