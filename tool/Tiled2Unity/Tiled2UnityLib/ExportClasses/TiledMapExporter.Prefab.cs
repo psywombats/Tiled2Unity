@@ -70,6 +70,8 @@ namespace Tiled2Unity
             if (node.Visible == false)
                 return;
 
+            xml.SetAttributeValue("sortingOrder", node.GetSortingOrder());
+
             // What type of node are we dealing with?
             if (node is TmxGroupLayer)
             {
@@ -229,7 +231,8 @@ namespace Tiled2Unity
                 // If we're not using a unity:layer override and there is an Object Type to go with this object then use it
                 if (String.IsNullOrEmpty(objectGroup.UnityLayerOverrideName))
                 {
-                    xmlObject.SetAttributeValue("layer", tmxObject.Type);
+                    // why would we /ever/ do this, christ
+                    //xmlObject.SetAttributeValue("layer", tmxObject.Type);
                 }
 
                 XElement objElement = null;
@@ -388,6 +391,9 @@ namespace Tiled2Unity
             // Some users may want resource prefabs to be saved to a particular path
             {
                 string unityResourcePath = properties.GetPropertyValueAsString("unity:resourcePath", "");
+                if (unityResourcePath.Length == 0 && context == PrefabContext.Root) {
+                    unityResourcePath = Settings.ParentDirectory;
+                }
                 if (!String.IsNullOrEmpty(unityResourcePath))
                 {
                     if (context != PrefabContext.Root)
@@ -687,9 +693,9 @@ namespace Tiled2Unity
         private string CreateTerrainDataForLayer(TmxLayer layer)
         {
             StringBuilder result = new StringBuilder();
-            for (int x = 0; x < layer.Width; x += 1)
+            for (int y = 0; y < layer.Height; y += 1)
             {
-                for (int y = 0; y < layer.Height; y += 1)
+                for (int x = 0; x < layer.Width; x += 1)
                 {
                     uint terrainId = layer.GetTileIdAt(x, y);
                     result.Append(terrainId);

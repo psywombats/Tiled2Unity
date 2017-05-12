@@ -99,7 +99,7 @@ namespace Tiled2Unity
             }
 
             // Save the file (which is importing it into Unity)
-            string pathToSave = Path.Combine(exportDir, fileToSave);
+            string pathToSave = Path.Combine(Path.Combine(exportDir, Settings.ParentDirectory), fileToSave);
             Logger.WriteLine("Exporting to: {0}", pathToSave);
             doc.Save(pathToSave);
             Logger.WriteSuccess("Succesfully exported: {0}\n  Vertex Scale = {1}\n  Object Type Xml = {2}",

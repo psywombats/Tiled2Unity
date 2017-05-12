@@ -36,6 +36,7 @@ namespace Tiled2Unity
 
             NDesk.Options.OptionSet options = new NDesk.Options.OptionSet()
             {
+                { "p|parent-directory=", "Will export to this subdirectory of Imported", p => Tiled2Unity.Settings.ParentDirectory = !String.IsNullOrEmpty(p) ? p : "" },
                 { "o|object-type-xml=", "Supply an Object Type XML file for types and their properties", o => Tiled2Unity.Settings.ObjectTypeXml = !String.IsNullOrEmpty(o) ? Path.GetFullPath(o) : "" },
                 { "s|scale=", "Scale the output vertices by a value.\nA value of 0.01 is popular for many Unity projects that use 'Pixels Per Unit' of 100 for sprites.\nDefault is 1 (no scaling).", s => Tiled2Unity.Settings.Scale = ParseFloatDefault(s, 1.0f) },
                 { "c|convex", "Limit polygon colliders to be convex with no holes. Increases the number of polygon colliders in export. Can be overriden on map or layer basis with unity:convex property.", c => Tiled2Unity.Settings.PreferConvexPolygons = true },
